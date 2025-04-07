@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.dark header {
+            background: #2c2c2c;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        body.dark .logo {
+            color: #66b0ff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        body.dark .nav-links a {
+            color: #e0e0e0;
+        }
+
+        .nav-links a:hover {
+            color: #007bff;
+        }
+
+        body.dark .nav-links a:hover {
+            color: #66b0ff;
+        }
+
+        .theme-toggle {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        body.dark .theme-toggle {
+            background: #66b0ff;
+        }
+
+        .theme-toggle:hover {
+            background: #0056b3;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 100px;
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .profile-pic {
+            width: 145px;
+            height: 170px;
+            border-radius: 80%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 20px;
+            border: 3px solid #007bff;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        body.dark .hero p {
+            color: #b0b0b0;
+        }
+
+        /* Projects Section */
+        .projects {
+            padding: 60px 0;
+        }
+
+        .projects h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        body.dark .project-card {
+            background: #2c2c2c;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-card h3 {
+            padding: 15px;
+            font-size: 20px;
+        }
+
+        .project-card p {
+            padding: 0 15px 15px;
+            color: #666;
+        }
+
+        body.dark .project-card p {
+            color: #b0b0b0;
+        }
+
+        /* Chat Bubble */
+        .chat-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #007bff;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 200;
+        }
+
+        body.dark .chat-bubble {
+            background: #66b0ff;
+        }
+
+        .chat-bubble:hover {
+            transform: scale(1.05);
+        }
+
+        /* Chatbot Overlay */
+        .chat-overlay {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            width: 350px;
+            max-height: 500px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            flex-direction: column;
+            z-index: 300;
+        }
+
+        body.dark .chat-overlay {
+            background: #2c2c2c;
+        }
+
+        .chat-header {
+            background: #007bff;
+            color: #fff;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark .chat-header {
+            background: #66b0ff;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-message.bot {
+            align-items: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+        }
+
+        .bot .message-content {
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        body.dark .bot .message-content {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+
+        .user .message-content {
+            background: #007bff;
+            color: #fff;
+        }
+
+        body.dark .user .message-content {
+            background: #66b0ff;
+        }
+
+        .typing {
+            display: none;
+            font-style: italic;
+            color: #666;
+        }
+
+        body.dark .typing {
+            color: #b0b0b0;
+        }
+
+        .chat-footer {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        body.dark .chat-footer {
+            border-top: 1px solid #444;
+        }
+
+        .chat-footer input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        body.dark .chat-footer input {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .chat-overlay {
+                width: 90%;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">RAKESH KUMAR</div>
+                <div class="nav-links">
+                    <a href="#home">Home</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <button class="theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <img src="RAKESHUPhhh.jpg" alt="Profile Picture" class="profile-pic">
+            <h1>Hi, I'm Rakesh Kumar</h1>
+            <p>I'm a passionate developer creating innovative solutions and beautiful interfaces.</p>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2>My Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <img src="https://picsum.photos/300/200?random=1" alt="Project 1">
+                    <h3>Task Manager</h3>
+                    <p>A modern web app for task organization built with React.</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://picsum.photos/300/200?random=2" alt="Project 2">
+                    <h3>Weather App</h3>
+                    <p>Real-time weather updates using Node.js and APIs.</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://picsum.photos/300/200?random=3" alt="Project 3">
+                    <h3>Portfolio Site</h3>
+                    <p>A dynamic portfolio with vanilla JavaScript.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chat-bubble" onclick="toggleChat()">Ask anything about me</div>
+
+    <div class="chat-overlay" id="chatOverlay">
+        <div class="chat-header">
+            <img src="RAKESHUPhhh.jpg" alt="Profile Picture">
+            <h3>Rakesh Kumar</h3>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message bot">
+                <div class="message-content">Hi, I'm Rakesh Kumar! What do you want to know about me?</div>
+            </div>
+            <div class="chat-message bot typing" id="typingIndicator">
+                <div class="message-content">Typing...</div>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        </div>
+    </div>
+
+    <script>
+        const myFullName = "Rakesh Kumar";
+        const myDescription = "I'm a full-stack developer with 0 years of experience in building web applications. I specialize in JavaScript, React, and Node.js. I love creating user-friendly interfaces and solving complex problems. In my free time, I enjoy hiking and contributing to open-source projects.";
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        // Load theme from localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+
+        function toggleChat() {
+            const chatOverlay = document.getElementById('chatOverlay');
+            chatOverlay.style.display = chatOverlay.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const chatBody = document.getElementById('chatBody');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const message = chatInput.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message user';
+            userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+            chatBody.appendChild(userMessage);
+
+            // Clear input
+            chatInput.value = '';
+
+            // Show typing indicator
+            typingIndicator.style.display = 'block';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Simulate API call to Gemini
+            try {
+                // Mock API response (since I can't call the real Gemini API)
+                const mockResponse = await new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve({
+                            candidates: [{
+                                content: {
+                                    parts: [{
+                                        text: `Hey, that's a great question! I'm ${myFullName}. Based on what I know, ${message.toLowerCase().includes('about you') ? myDescription : 'I enjoy chatting about tech and coding!'} What's next?`
+                                    }]
+                                }
+                            }]
+                        });
+                    }, 1000);
+                });
+
+                // Hide typing indicator
+                typingIndicator.style.display = 'none';
+
+                // Add bot response
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.innerHTML = `<div class="message-content">${mockResponse.candidates[0].content.parts[0].text}</div>`;
+                chatBody.appendChild(botMessage);
+            } catch (error) {
+                // Handle error
+                typingIndicator.style.display = 'none';
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.innerHTML = `<div class="message-content">Oops, something went wrong. Try again!</div>`;
+                chatBody.appendChild(botMessage);
+            }
+
+            // Scroll to bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
